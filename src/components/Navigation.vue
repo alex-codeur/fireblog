@@ -11,11 +11,16 @@
           <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
           <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
           <router-link class="link" to="#">Create Post</router-link>
-          <router-link class="link" :to="{ name: 'Login' }"
+          <router-link v-if="!user" class="link" :to="{ name: 'Login' }"
             >Login / Register</router-link
           >
         </ul>
-        <div @click="toggleProfileMenu" class="profile" ref="profile">
+        <div
+          v-if="user"
+          @click="toggleProfileMenu"
+          class="profile"
+          ref="profile"
+        >
           <span>{{ this.$store.state.profileInitials }}</span>
           <div v-show="profileMenu" class="profile-menu">
             <div class="info">
@@ -42,11 +47,9 @@
                   <p>Admin</p>
                 </router-link>
               </div>
-              <div class="option">
-                <router-link class="option" to="#">
-                  <signOutIcon class="icon" />
-                  <p>Sign Out</p>
-                </router-link>
+              <div @click="signOut" class="option">
+                <signOutIcon class="icon" />
+                <p>Sign Out</p>
               </div>
             </div>
           </div>
@@ -59,7 +62,7 @@
         <router-link class="link" :to="{ name: 'Home' }">Home</router-link>
         <router-link class="link" :to="{ name: 'Blogs' }">Blogs</router-link>
         <router-link class="link" to="#">Create Post</router-link>
-        <router-link class="link" :to="{ name: 'Login' }"
+        <router-link v-if="!user" class="link" :to="{ name: 'Login' }"
           >Login/Register</router-link
         >
       </ul>
@@ -72,6 +75,8 @@ import menuIcon from "../assets/Icons/bars-regular.svg";
 import userIcon from "../assets/Icons/user-alt-light.svg";
 import adminIcon from "../assets/Icons/user-crown-light.svg";
 import signOutIcon from "../assets/Icons/sign-out-alt-regular.svg";
+import firebase from "firebase/app";
+import "firebase/auth";
 export default {
   name: "navigation",
   components: {
@@ -103,13 +108,25 @@ export default {
       this.mobileNav = false;
       return;
     },
+
     toggleMobileNav() {
       this.mobileNav = !this.mobileNav;
     },
+
     toggleProfileMenu(e) {
       if (e.target === this.$refs.profile) {
         this.profileMenu = !this.profileMenu;
       }
+    },
+
+    signOut() {
+      firebase.auth().signOut();
+      window.location.reload();
+    },
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
     },
   },
 };
