@@ -70,11 +70,20 @@ export default new Vuex.Store({
   },
   actions: {
     async getCurrentUser({ commit }) {
-      const database = await db.collection('users').doc(firebase.auth().currentUser.uid);
-      const dbResuslts = await database.get();
+      const dataBase = await db.collection('users').doc(firebase.auth().currentUser.uid);
+      const dbResuslts = await dataBase.get();
       commit("setProfileInfo", dbResuslts);
       commit("setProfileInitials");
       console.log(dbResuslts);
+    },
+    async updateUserSettings({ commit, state }) {
+      const dataBase = await db.collection("users").doc(state.profileId);
+      await dataBase.update({
+        firstName: state.profileFirstName,
+        lastName: state.profileLastName,
+        username: state.profileUserName,
+      });
+      commit("setProfileInitials");
     }
   },
   modules: {

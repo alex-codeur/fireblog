@@ -29,7 +29,7 @@
           <label for="email">Email:</label>
           <input disabled type="email" id="email" v-model="email" />
         </div>
-        <button>Save Changes</button>
+        <button @click="updateProfile">Save Changes</button>
       </div>
     </div>
   </div>
@@ -51,6 +51,10 @@ export default {
     };
   },
   methods: {
+    updateProfile() {
+      this.$store.dispatch("updateUserSettings");
+      this.modalActive = !this.modalActive;
+    },
     closeModal() {
       this.modalActive = !this.modalActive;
     },
@@ -77,7 +81,7 @@ export default {
         return this.$store.state.profileUserName;
       },
       set(payload) {
-        this.$store.commit("changeUsername", payload);
+        this.$store.commit("changeUserName", payload);
       },
     },
     email() {
